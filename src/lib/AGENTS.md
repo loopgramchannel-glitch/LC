@@ -1,0 +1,4 @@
+- On loopgramchannel.com, Firebase authDomain = own host (`pickAuthDomain()`, auth-domain.ts); src/server.ts proxies /__/auth/* and /__/firebase/* to FIREBASE_AUTH_DOMAIN. Why: Google's picker shows the brand, not firebaseapp.com.
+- Growth helpers (share tags, ?t= moments, watch history, up-next) are pure functions in growth.ts; watch history stays on-device (watch-history.ts). Why: tested in one place, zero server cost.
+- Home feed and /shorts order posts via mixFeed() (feed-mix.ts): hourly seeded shuffle, no two neighbours from the same group (import batch). Why: TikTok-style variety with no SSR/hydration mismatch.
+- Google SEO tags/sitemap built in seo.ts (tested). Why: one place for Google tags.
