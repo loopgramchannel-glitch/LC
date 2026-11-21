@@ -91,7 +91,8 @@ export function useRatios(urls: string[]): Record<string, number> {
       if (!u) return;
       captureFrame(u).then((x) => { if (live && x?.ratio) setM((o) => ({ ...o, [u]: x.ratio })); idle(next); });
     };
-    if (pending.length) idle(next);
+    // Lite: never download video files to measure shape; unknown uploads default to 16:9.
+    void next; pending.length = 0;
     return () => { live = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
@@ -105,7 +106,8 @@ function FrameThumb({ url, title, className }: { url: string; title: string; cla
   useEffect(() => {
     let live = true;
     const el = ref.current;
-    const go = () => captureFrame(url).then((x) => live && setR(x && x.img ? x : null));
+    // Lite: no background video download for thumbnails; show the light title card.
+    const go = () => { if (live) setR(null); };
     if (!el || !("IntersectionObserver" in window)) { go(); return () => { live = false; }; }
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); go(); } }, { rootMargin: "300px" });
     io.observe(el);

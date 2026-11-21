@@ -142,7 +142,7 @@ function ShortSlide({ post, active, warm, muted, setMuted, onShare }: { post: Po
 
   useEffect(() => {
     const v = ref.current; if (!v || src.embed) return;
-    v.preload = "auto";
+    v.preload = active ? "auto" : "none";
     // Show the very first frame (0:00), never the uploaded thumbnail.
     const first = () => { if (v.paused) { try { v.currentTime = 0.001; } catch { /* not seekable yet */ } } };
     v.addEventListener("loadedmetadata", first, { once: true });
@@ -152,6 +152,7 @@ function ShortSlide({ post, active, warm, muted, setMuted, onShare }: { post: Po
   }, [post.videoUrl, src.embed]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const v = ref.current; if (!v) return;
+    v.preload = active ? "auto" : "none";
     if (!active) { v.pause(); setShown(false); try { v.currentTime = 0; } catch { /* ignore */ } return; }
     try { if (v.currentTime > 0.5) v.currentTime = 0; } catch { /* ignore */ }
     setPaused(false);
@@ -186,7 +187,7 @@ function ShortSlide({ post, active, warm, muted, setMuted, onShare }: { post: Po
           : <PostThumb post={post} className="absolute inset-0 h-full w-full" />
       ) : (
         <>
-          <video ref={ref} playsInline loop preload="auto" poster="" draggable={false} muted={muted}
+          <video ref={ref} playsInline loop preload="none" poster="" draggable={false} muted={muted}
             onClick={toggle} onPlaying={() => setShown(true)} className="absolute inset-0 h-full w-full object-contain" />
           {/* TikTok: Studio thumbnails are for cards only; the player shows the video itself. */}
         </>

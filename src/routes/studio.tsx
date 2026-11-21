@@ -196,7 +196,7 @@ function UsersPanel() {
   const [email, setEmail] = useState("");
   const [confirm, setConfirm] = useState<{ uid: string; email: string | null; action: "disable" | "enable" | "revoke" | "delete" } | null>(null);
   const pageToken = pages[pages.length - 1];
-  const q = useQuery({ refetchInterval: 30_000, queryKey: ["studio", "users", pageToken, email], queryFn: () => call(studioUsers, { pageToken, email: email || undefined }) });
+  const q = useQuery({ queryKey: ["studio", "users", pageToken, email], queryFn: () => call(studioUsers, { pageToken, email: email || undefined }) });
   const act = useMutation({
     mutationFn: (v: { uid: string; action: "disable" | "enable" | "revoke" | "delete" }) => call(studioUserAction, v),
     onSuccess: () => { toast.success("Done"); setConfirm(null); qc.invalidateQueries({ queryKey: ["studio", "users"] }); },
@@ -337,7 +337,7 @@ function MediaPanel() {
                   {i.key.startsWith("media/") && <input type="checkbox" aria-label={`Select ${i.key}`} checked={sel.has(i.key)} onChange={() => toggle(i.key)} className="absolute left-2 top-2 z-10 h-5 w-5" />}
                   <a href={url || undefined} target="_blank" rel="noreferrer" className="block aspect-video bg-secondary" title={i.key}>
                     {url && isImg ? <img src={url} alt="" loading="lazy" className="h-full w-full bg-black object-contain" />
-                      : url && isVid ? <video src={`${url}#t=1`} preload="metadata" muted playsInline className="pointer-events-none h-full w-full bg-black object-contain" />
+                      : url && isVid ? <span className="grid h-full w-full place-items-center bg-secondary text-xs font-semibold text-muted-foreground">▶ Video — tap to open</span>
                       : <div className="grid h-full place-items-center text-xs text-muted-foreground">File</div>}
                   </a>
                   <div className="flex items-center gap-2 p-2 text-[11px] text-muted-foreground">
